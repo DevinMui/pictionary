@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Speech Sample</title>
+	<meta charset="utf-8" />
+</head>
+<body style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:13px;">
+	<div id="warning">
+		<h1 style="font-weight:500;">Speech Recognition Speech SDK not found (microsoft.cognitiveservices.speech.sdk.bundle.js missing).</h1>
+	</div>
+
+	<div id="content" style="display:none">
+		<table width="100%">
+		<tr>
+			<td></td>
+			<td><h1 style="font-weight:500;">Microsoft Cognitive Services Speech SDK JavaScript Quickstart</h1></td>
+		</tr>
+		<tr>
+			<td align="right"><a href="https://docs.microsoft.com/azure/cognitive-services/speech-service/get-started" target="_blank">Subscription</a>:</td>
+			<td><input id="subscriptionKey" type="text" size="40" value="ae41fa8eeb1a413baaeac3b80ed9bf18"></td>
+		</tr>
+		<tr>
+			<td align="right">Region</td>
+			<td><input id="regionKey" type="text" size="40" value="westus"></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><button id="startRecognizeOnceAsyncButton">Start recognition</button></td>
+		</tr>
+		<tr>
+			<td align="right" valign="top">Results</td>
+			<td><textarea id="phraseDiv" style="display: inline-block;width:500px;height:200px"></textarea></td>
+		</tr>
+		</table>
+
+		<h1>Learn voices</h1>
+
+		<div id="controls">
+			<button id="recordButton">Record</button>
+			<button id="pauseButton" disabled>Pause</button>
+			<button id="stopButton" disabled>Stop</button>
+		</div>
+
+		<div id="formats">Format: start recording to see sample rate</div>
+		<h3>Recordings</h3>
+		<ol id="recordingsList"></ol>
+
+	</div>
+
+	<script src="./jquery.min.js"></script>
+
+	<!-- recorder wav -->
+	<script src="./recorder.js"></script>
+
+	<!-- SDK REFERENCE -->
+	<script src="./microsoft.cognitiveservices.speech.sdk.bundle.js"></script>
+
+	<script src="./voice.js"></script>
+</body>
+</html>
