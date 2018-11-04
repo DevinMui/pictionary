@@ -7,36 +7,30 @@
 	<link href="css/style.css" rel="stylesheet">
 </head>
 <body style="font-family: Helvetica;">
-	<section id="init">
-		<div class="container">
-			<div>
-				<h2>Azure Setup</h2>
-				<form class="form-group">
-					<input id="speechSubscriptionKey" type="text" value="ae41fa8eeb1a413baaeac3b80ed9bf18" placeholder="Speech Recognition Key" class="form-control">
-					<input id="speakerSubscriptionKey" type="text" value="47a317206894400489d697698fdde1c4" placeholder="Speaker Recognition Key" class="form-control">
-					<input id="regionKey" type="text" value="westus" placeholder="Region" class="form-control">
-					<a href="#" class="btn btn-primary form-control" onclick="setup()">Setup</a>
-					<a href="#" class="btn btn-primary form-control" onclick="removeAll()">Remove All</a>
-				</form>
-			</div>
-		</div>
-	</section>
 
 	<section id="home">
 		<div class="container">
-			<h2>Welcome to Unnamed Pictionary Game!</h2>
+				<form class="form-group" id="azure-setup" style="position: absolute; bottom: 8px; right: 8px">
+					<input id="speechSubscriptionKey" type="hidden" value="ae41fa8eeb1a413baaeac3b80ed9bf18" placeholder="Speech Recognition Key" class="form-control">
+					<input id="speakerSubscriptionKey" type="hidden" value="47a317206894400489d697698fdde1c4" placeholder="Speaker Recognition Key" class="form-control">
+					<input id="regionKey" type="hidden" value="westus" placeholder="Region" class="form-control">
+					<a href="#home" style="width: auto;" class="btn btn-primary form-control" onclick="setup()">Setup Azure</a>
+					<a href="#" class="btn btn-primary form-control" onclick="removeAll()">Remove All</a>
+				</form>
+			<h2>Welcome to PictRNNary!</h2>
 			<h2>Would you like to play by yourself?</h2>
-			<a href="#canvas" onclick="play()" class="btn btn-primary">Yes</a>
+			<a onclick="singlePlay()" class="btn btn-primary">Yes</a>
 			<a href="#enroll" class="btn btn-success">No</a>
 		</div>
 	</section>
+	<a id="link-to-canvas" href="#canvas" style="display:none"></a>
 
 	<section id="enroll">
 		<div class="container">
 			<h2>Add a person</h2>
 			<div id="players"></div>
 			<a class="btn btn-info" onclick="enrollNewProfile(10)">Add another player (up to 10)</a>
-			<a href="#canvas" class="btn btn-primary" onclick="play()">Play!</a>
+			<a class="btn btn-primary" onclick="play()">Play!</a>
 		</div>
 	</section>
 
@@ -62,15 +56,23 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/vivus/0.4.4/vivus.min.js"></script>
 	<script src="./jquery.min.js"></script>
 	<script src="./recorder.js"></script>
+	<script src="./toaster.js"></script>
 	<script src="./microsoft.cognitiveservices.speech.sdk.bundle.js"></script>
 	<script src="./voice.js"></script>
 	<script>
+		let azureState = "not setup"
+
+		function setup(){
+			azureState = "setup";
+			// $('#setup-button')
+			$.toaster({message: "Successfully connected to Azure", priority: "success"})
+		}
+
 		// Speaker Recognition API profile configuration - constructs to make management easier
 		var Profile = class { constructor (name, profileId) { this.name = name; this.profileId = profileId;this.score=0}};
 		var VerificationProfile = class { constructor (name, profileId) { this.name = name; this.profileId = profileId; this.remainingEnrollments = 3}};
 		var profileIds = [];
 		var verificationProfile = new VerificationProfile();
-
 		var lastSpoke = undefined;
 		var correct = false;
 		var maxScore = 3;
@@ -79,7 +81,21 @@
 			BurnItAll();
 		}
 
+		function singlePlay(){
+			azureState = "registered"
+			play()
+		}
 		function play(){
+			if(azureState !== "registered"){
+				$.toaster({message: "Please register more players first", priority: "danger"})
+				return
+			}
+			location.href = '#canvas'
+			var obj = 'sheep'
+			$('#azure-setup').css('display', 'none')
+			new Vivus('working-canvas',
+				{duration: 1000, type:'oneByOne', pathTimingFunction: Vivus.EASE})
+
 			$('#nextGame').attr('disabled', 'disabled');
 			for(var i=0;i<profileIds.length;i++){
 				if(profileIds[i].score === maxScore){
@@ -94,7 +110,7 @@
 			// 	{duration: 1000, type:'oneByOne', pathTimingFunction: Vivus.EASE})
 			nextImage();
 
-			var recognizeSpeechId = setTimeout(function(){
+			var recognizeSpeechId = setInterval(function(){
 				recognizer.recognizeOnceAsync(
 				function (result) {
 					window.console.log(result);
