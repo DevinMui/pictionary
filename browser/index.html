@@ -23,7 +23,7 @@
 			<a href="#enroll" class="btn btn-success">No</a>
 		</div>
 	</section>
-	<a id="link-to-canvas" href="#canvas" style="display:none"></a>
+	<a id="link-to-canvas" href="#play" style="display:none"></a>
 
 	<section id="enroll">
 		<div class="container">
@@ -45,7 +45,7 @@
 		<div class="container" style="">
 			<div id="canvas" style="">
 			</div>
-			<div style="position: absolute; bottom: 8px; right: 8px">
+			<div style="position: absolute; bottom: 8px; right: 8px; display: none" id="play-buttons">
 				<button class="btn btn-danger" onclick="giveUp()">Give up?</button>
 				<button class="btn btn-primary" onclick="play()">Next</button>
 			</div>
@@ -54,9 +54,9 @@
 
 	<section id="end">
 		<div class="container">
-			<h1 id="winner"></h1>
+			<h1 id="winner" style=""></h1>
 			<h2>Play again?</h2>
-			<a href="#canvas" class="btn btn-primary" onclick="play()">Yes</a>
+			<a href="#play" class="btn btn-primary" onclick="play()">Yes</a>
 			<a href="#home" class="btn btn-danger" onclick="removePlayers()">No</a><!-- oh no this will erase your enrollment profiles! -->
 			<a href="#enroll" class="btn btn-info">Configure Players</a>
 		</div>
@@ -172,7 +172,7 @@
 				$.get('/'+fn, function(res){
 
 					let response = res
-					$('#canvas').html(response)
+					$('#play').html(response)
 					svg = $('svg')[0]
 					svg.setAttribute('id', 'working-canvas')
 					document.getElementById("working-canvas").setAttribute('height', '100%')
