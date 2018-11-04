@@ -38,10 +38,10 @@ import svgwrite
 data_dir ='http://github.com/hardmaru/sketch-rnn-datasets/raw/master/aaron_sheep/'
 models_root_dir = '/tmp/sketch_rnn/models'
 model_dir = '/tmp/sketch_rnn/models/aaron_sheep/layer_norm'
-total_model_dir = [ '/tmp/sketch_rnn/models/owl/lstm', '/tmp/sketch_rnn/models/flamingo/lstm_uncond', '/tmp/sketch_rnn/models/catbus/lstm', '/tmp/sketch_rnn/models/elephantpig/lstm']
-names = ['owl','flamingo','cat','elephant']
+total_model_dir = [ '/tmp/sketch_rnn/models/owl/lstm', '/tmp/sketch_rnn/models/flamingo/lstm_uncond', '/tmp/sketch_rnn/models/catbus/lstm', '/tmp/sketch_rnn/models/elephantpig/lstm','/home/catherinelee274/pictionary/browser/model/apple/checkpoint_path']
+names = ['owl','flamingo','cat','elephant','apple']
 num = random.randrange(0,len(total_model_dir)-1)
-
+#num = len(total_model_dir)-1
 
 download_pretrained_models(models_root_dir=models_root_dir)
 
