@@ -33,8 +33,10 @@ import svgwrite
 
 print("start")
 
+
+timestr = time.strftime("%Y%m%d-%H%M%S")
 # little function that displays vector images and saves them to .svg
-def draw_strokes(data, factor=0.2, svg_filename = 'output/sample.svg'):
+def draw_strokes(data, factor=0.2, svg_filename = 'output/'+timestr+'.svg'):
   tf.gfile.MakeDirs(os.path.dirname(svg_filename))
   min_x, max_x, min_y, max_y = get_bounds(data, factor)
   dims = (50 + max_x - min_x, 50 + max_y - min_y)
