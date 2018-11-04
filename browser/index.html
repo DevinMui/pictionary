@@ -41,9 +41,8 @@
 
 	<section id="play">
 		<!-- aaron -->
-		<div class="container">
-			<div id="canvas" >
-				<svg id="working-canvas" width="100%" viewBox="20 5 50 50"><path d="M33.909371979534626,30.66960085183382 m0.5399619787931442,-1.0799239575862885 l1.3499048352241516,-1.0799239575862885 1.8898668885231018,-0.8099429309368134 l1.0799239575862885,1.3499048352241516 2.42982879281044,1.3499048352241516 l1.6198858618736267,0.0 2.159847915172577,-1.0799239575862885 l3.5097527503967285,-0.8099429309368134 2.159847915172577,0.0 l1.3499048352241516,1.0799239575862885 0.8099429309368134,1.3499048352241516 l1.8898668885231018,-1.0799239575862885 4.85965758562088,0.0 l2.9697906970977783,1.6198858618736267 0.2699809893965721,1.6198858618736267 l3.7797337770462036,4.319695830345154 0.5399619787931442,1.8898668885231018 l-3.7797337770462036,1.0799239575862885 -2.42982879281044,4.049714803695679 l0.0,1.0799239575862885 -6.479543447494507,1.6198858618736267 l-7.019505500793457,0.5399619787931442 1.3499048352241516,-1.0799239575862885 l-4.589676558971405,0.0 -2.159847915172577,-0.5399619787931442 l-2.9697906970977783,-1.3499048352241516 -1.6198858618736267,-1.3499048352241516 l-0.8099429309368134,-1.3499048352241516 2.9697906970977783,-2.42982879281044 l-0.2699809893965721,-0.8099429309368134 -5.3996193408966064,-2.6998096704483032 l-0.8099429309368134,-1.0799239575862885 0.0,-4.319695830345154 l0.5399619787931442,-0.5399619787931442 -1.6198858618736267,-1.0799239575862885 l-1.6198858618736267,-0.5399619787931442 -3.5097527503967285,0.2699809893965721 l-1.6198858618736267,1.8898668885231018 -0.2699809893965721,1.0799239575862885 l0.0,2.6998096704483032 0.5399619787931442,1.3499048352241516 l6.209562420845032,0.0 2.159847915172577,-0.5399619787931442 m-6.479543447494507,-8.099429607391357 l1.3499048352241516,-0.5399619787931442 1.0799239575862885,-1.6198858618736267 l0.5399619787931442,0.5399619787931442 0.0,2.9697906970977783 m-2.159847915172577,-1.8898668885231018 l0.0,1.6198858618736267 m-0.8099429309368134,2.42982879281044 l0.2699809893965721,0.8099429309368134 m12.959086894989014,14.308991432189941 l0.0,3.5097527503967285 m4.049714803695679,-2.42982879281044 l-0.5399619787931442,2.42982879281044 m9.17935311794281,-1.8898668885231018 l0.0,2.9697906970977783 m2.6998096704483032,-3.2397717237472534 l0.0,2.42982879281044 " fill="none" stroke="black" stroke-width="1" /></svg>
+		<div class="container" style="">
+			<div id="canvas" style="">
 			</div>
 			<button class="btn btn-danger" onclick="giveUp()">Give up?</button>
 		</div>
@@ -62,6 +61,7 @@
 	<script src="./microsoft.cognitiveservices.speech.sdk.bundle.js"></script>
 	<script src="./voice.js"></script>
 	<script>
+
 		// Speaker Recognition API profile configuration - constructs to make management easier
 		var Profile = class { constructor (name, profileId) { this.name = name; this.profileId = profileId;this.score=0}};
 		var VerificationProfile = class { constructor (name, profileId) { this.name = name; this.profileId = profileId; this.remainingEnrollments = 3}};
@@ -108,20 +108,24 @@
 
 		$('#kms').click(function(){
 			$.get('/another.svg', function(res){
+
+		function nextImage(){
+			console.log('test')
+			$.get('/bad2.svg', function(res){
+
 				let response = res
 				$('#canvas').html(response)
-				$('svg')[0].setAttribute('id', 'working-canvas')
-				$('svg').removeAttr('viewBox');
-				$('svg').removeAttr('width')
-				$('svg')[0].setAttribute('preserveAspectRatio', 'none')
-				$('svg').removeAttr('height')
-				$('svg')[0].setAttribute("viewBox", "20 0 50 50");
+				svg = $('svg')[0]
+				svg.setAttribute('id', 'working-canvas')
+				document.getElementById("working-canvas").setAttribute('height', '100%')
+				document.getElementById("working-canvas").setAttribute('width', '100%')
+				document.getElementById("working-canvas").setAttribute("viewBox", "20 10 50 50");
 				new Vivus('working-canvas',
-                    {duration: 500, type:'oneByOne', pathTimingFunction: Vivus.EASE})
+                    {duration: 888, type:'oneByOne', start:'autostart', pathTimingFunction: Vivus.EASE})
 			}, 'text').fail(function(){
 				alert("Error receiving drawing.")
 			})
-		})
+		}
 		var recorder;
 		var audio_context;
 
