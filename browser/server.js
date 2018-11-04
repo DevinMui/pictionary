@@ -12,7 +12,7 @@ app.get('/svg-test', function(req, res){
 })
 
 app.get('/generate', function(req, res){
-	exec('python main.py', function(err, stdout, stderr){
+	exec('python more_vae.py', function(err, stdout, stderr){
 		if(err) console.log(err)
 		if(stderr) console.log(stderr)
 		res.json({ filename: stdout })
