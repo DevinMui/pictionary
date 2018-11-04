@@ -32,7 +32,7 @@ import matplotlib.pyplot as plt
 np.set_printoptions(precision=8, edgeitems=6, linewidth=200, suppress=True)
 import svgwrite
 
-print("start")
+#print("start")
 
 
 timestr = time.strftime("%Y%m%d-%H%M%S")
@@ -42,7 +42,7 @@ def draw_strokes(data, factor=0.2, svg_filename = 'output/'+timestr+'.svg'):
   min_x, max_x, min_y, max_y = get_bounds(data, factor)
   dims = (50 + max_x - min_x, 50 + max_y - min_y)
   dwg = svgwrite.Drawing(svg_filename, size=dims) 
-  print("wrote svg to svg_filename aka output/")
+  #print("wrote svg to svg_filename aka output/")
   dwg.add(dwg.rect(insert=(0, 0), size=dims,fill='white'))
   lift_pen = 1
   abs_x = 25 - min_x 
@@ -64,7 +64,7 @@ def draw_strokes(data, factor=0.2, svg_filename = 'output/'+timestr+'.svg'):
   stroke_width = 1
   dwg.add(dwg.path(p).stroke(the_color,stroke_width).fill("none"))
   dwg.save()
-  display(SVG(dwg.tostring()))
+  #display(SVG(dwg.tostring()))
 
 # generate a 2D grid of many vector drawings
 def make_grid_svg(s_list, grid_space=10.0, grid_space_x=16.0):
