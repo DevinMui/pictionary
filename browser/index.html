@@ -106,6 +106,7 @@
 		var lastSpoke = undefined;
 		var correct = false;
 		var maxScore = 3;
+		var model;
 
 		function removeAll(){
 			BurnItAll();
@@ -123,7 +124,7 @@
 			}
 			$('#play-buttons').css('display', '')
 			location.href = '#canvas'
-			var obj = 'sheep'
+			var obj = model
 			$('#azure-setup').css('display', 'none')
 			
 			nextImage();
@@ -165,20 +166,24 @@
 
 		function nextImage(){
 			console.log('test')
-			$.get('/bad2.svg', function(res){
+			$.get('/generate', function(res){
+				var fn = 'model/'+res.body.filename.replace('\n','')
+				model = res.body.filename.substr('output/'.length,res.body.filename.indexOf('_'))
+				$.get('/'+fn, function(res){
 
-				let response = res
-				$('#canvas').html(response)
-				svg = $('svg')[0]
-				svg.setAttribute('id', 'working-canvas')
-				document.getElementById("working-canvas").setAttribute('height', '100%')
-				document.getElementById("working-canvas").setAttribute('width', '100%')
-				document.getElementById("working-canvas").setAttribute("viewBox", "20 10 50 50");
-				new Vivus('working-canvas',
-                    {duration: 888, type:'oneByOne', start:'autostart', pathTimingFunction: Vivus.EASE})
-			}, 'text')
-			.fail(function(){
-				alert("Error receiving drawing.")
+					let response = res
+					$('#canvas').html(response)
+					svg = $('svg')[0]
+					svg.setAttribute('id', 'working-canvas')
+					document.getElementById("working-canvas").setAttribute('height', '100%')
+					document.getElementById("working-canvas").setAttribute('width', '100%')
+					document.getElementById("working-canvas").setAttribute("viewBox", "20 10 50 50");
+					new Vivus('working-canvas',
+						{duration: 888, type:'oneByOne', start:'autostart', pathTimingFunction: Vivus.EASE})
+					}, 'text')
+					.fail(function(){
+					alert("Error receiving drawing.")
+					})
 			})
 		}
 		var recorder;
