@@ -1,4 +1,4 @@
-# Pictionary
+# PictRNNary
 
 Cal Hacks 2018
 
