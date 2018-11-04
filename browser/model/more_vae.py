@@ -34,10 +34,21 @@ import svgwrite
 
 #print("start")
 
+#defining data paths
+data_dir ='http://github.com/hardmaru/sketch-rnn-datasets/raw/master/aaron_sheep/'
+models_root_dir = '/tmp/sketch_rnn/models'
+model_dir = '/tmp/sketch_rnn/models/aaron_sheep/layer_norm'
+total_model_dir = [ '/tmp/sketch_rnn/models/owl/lstm', '/tmp/sketch_rnn/models/flamingo/lstm_uncond', '/tmp/sketch_rnn/models/catbus/lstm', '/tmp/sketch_rnn/models/elephantpig/lstm']
+names = ['owl','flamingo','cat','elephant']
+num = random.randrange(0,len(total_model_dir)-1)
+
+
+download_pretrained_models(models_root_dir=models_root_dir)
+
 
 timestr = time.strftime("%Y%m%d-%H%M%S")
 # little function that displays vector images and saves them to .svg
-def draw_strokes(data, factor=0.2, svg_filename = 'output/'+timestr+'.svg'):
+def draw_strokes(data, factor=0.2, svg_filename = 'output/'+names[num]+"_"+timestr+'.svg'):
   tf.gfile.MakeDirs(os.path.dirname(svg_filename))
   min_x, max_x, min_y, max_y = get_bounds(data, factor)
   dims = (50 + max_x - min_x, 50 + max_y - min_y)
@@ -100,16 +111,11 @@ def make_grid_svg(s_list, grid_space=10.0, grid_space_x=16.0):
     y_pos = new_y_pos+delta_pos[1]
   return np.array(result)
 
-data_dir ='http://github.com/hardmaru/sketch-rnn-datasets/raw/master/aaron_sheep/'
-models_root_dir = '/tmp/sketch_rnn/models'
-model_dir = '/tmp/sketch_rnn/models/aaron_sheep/layer_norm'
-total_model_dir = [ '/tmp/sketch_rnn/models/owl/lstm', '/tmp/sketch_rnn/models/flamingo/lstm_uncond', '/tmp/sketch_rnn/models/catbus/lstm', '/tmp/sketch_rnn/models/elephantpig/lstm']
-names = ['owl','flamingo','cat','elephant']
+
 
 #keep changing model_dir if you want to change 
 #model_dir = total_model_dir[1]
 
-download_pretrained_models(models_root_dir=models_root_dir)
 
 def load_env_compatible(data_dir, model_dir):
   """Loads environment for inference mode, used in jupyter notebook."""
@@ -146,7 +152,6 @@ def load_model_compatible(model_dir):
   sample_model_params.max_seq_len = 1  # sample one point at a time
   return [model_params, eval_model_params, sample_model_params]
 
-num = random.randrange(0,len(total_model_dir)-1)
 model_dir = total_model_dir[num]
 
 #[train_set, valid_set, test_set, hps_model, eval_hps_model, sample_hps_model] = load_env_compatible(data_dir, model_dir)
