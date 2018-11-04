@@ -224,7 +224,7 @@ function pollForEnrollment(location, profileId){
 				var name = window.prompt('Who was that talking?');
 				profileIds.push(new Profile(name, profileId));
 
-				var player = "<div><p>"+name+"</p></div>";
+				var player = `<div class="col-md-4 col-md-offset-4 player"><p>${name}</p></div>`;
 
 				$('#players').append(player);
 				console.log(profileId + ' is now mapped to ' + name);

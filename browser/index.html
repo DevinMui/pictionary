@@ -14,8 +14,8 @@
 					<input id="speechSubscriptionKey" type="hidden" value="ae41fa8eeb1a413baaeac3b80ed9bf18" placeholder="Speech Recognition Key" class="form-control">
 					<input id="speakerSubscriptionKey" type="hidden" value="47a317206894400489d697698fdde1c4" placeholder="Speaker Recognition Key" class="form-control">
 					<input id="regionKey" type="hidden" value="westus" placeholder="Region" class="form-control">
-					<a href="#home" style="width: auto;" class="btn btn-primary form-control" onclick="setup()">Setup Azure</a>
-					<a href="#" class="btn btn-primary form-control" onclick="removeAll()">Remove All</a>
+					<a href="#home" style="width: auto;" class="btn btn-success form-control" onclick="setup()">Setup Azure</a>
+					<a href="#" style="width: auto; background: red"class="btn btn-danger form-control" onclick="removeAll()">Remove All</a>
 				</form>
 			<h2>Welcome to PictRNNary!</h2>
 			<h2>Would you like to play by yourself?</h2>
@@ -27,20 +27,28 @@
 
 	<section id="enroll">
 		<div class="container">
-			<h2>Add a person</h2>
-			<div id="players"></div>
-			<a class="btn btn-info" onclick="enrollNewProfile(10)">Add another player (up to 10)</a>
+			<h2>Add a player</h2>
+			<div id="players" class="row">
+			</div>
+			<a class="btn btn-info" onclick="enroll()">Add another player (up to 10)</a>
 			<a class="btn btn-primary" onclick="play()">Play!</a>
+			<div id="read-text" style="max-width: 666px; margin: 0 auto; text-align: left; display: none">
+				<h4>Try reading... </h4>
+				<p id="read-text-text">
+				</p>
+			</div>
 		</div>
 	</section>
 
-	<section id="play">
+	<section id="play" style="">
 		<!-- aaron -->
 		<div class="container" style="">
 			<div id="canvas" style="">
 			</div>
-			<button class="btn btn-danger" onclick="giveUp()">Give up?</button>
-			<button class="btn btn-primary" onclick="play()">Next</button>
+			<div style="position: absolute; bottom: 8px; right: 8px">
+				<button class="btn btn-danger" onclick="giveUp()">Give up?</button>
+				<button class="btn btn-primary" onclick="play()">Next</button>
+			</div>
 		</div>
 	</section>
 
@@ -48,7 +56,7 @@
 		<div class="container">
 			<h1 id="winner"></h1>
 			<h2>Play again?</h2>
-			<a href="#play" class="btn btn-primary" onclick="play()">Yes</a>
+			<a href="#canvas" class="btn btn-primary" onclick="play()">Yes</a>
 			<a href="#home" class="btn btn-danger" onclick="removePlayers()">No</a><!-- oh no this will erase your enrollment profiles! -->
 			<a href="#enroll" class="btn btn-info">Configure Players</a>
 		</div>
@@ -60,11 +68,33 @@
 	<script src="./microsoft.cognitiveservices.speech.sdk.bundle.js"></script>
 	<script src="./voice.js"></script>
 	<script>
+		let enrolled = 0
 		let azureState = "not setup"
-
+		const qwertyui = [
+			"According to all known laws of aviation, there is no way a bee should be able to fly. Its wings are too small to get its fat little body off the ground. The bee, of course, flies anyway because bees don't care what humans think is impossible. Yellow, black. Yellow, black. Yellow, black. Yellow, black. Ooh, black and yellow! Let's shake it up a little.",
+			`A spectre is haunting Europe – the spectre of communism. All the powers of old Europe have entered into a holy alliance to exorcise this spectre: Pope and Tsar, Metternich and Guizot, French Radicals and German police-spies. Where is the party in opposition that has not been decried as communistic by its opponents in power? `,
+			`The FitnessGram™ Pacer Test is a multistage aerobic capacity test that progressively gets more difficult as it continues. The 20 meter pacer test will begin in 30 seconds. Line up at the start. The running speed starts slowly, but gets faster each minute after you hear this signal. `,
+			`Attention: If you or a loved one has been diagnosed with Mesothelioma you may to be entitled to financial compensation. Mesothelioma is a rare cancer linked to asbestos exposure. Exposure to asbestos in they Navy, shipyards, mills, heating, construction or the automotive industries may put you at risk. `,
+			`hey everyone, hope youre having a great time coding or whatever. Hey @Preston Reed!Hope youre having the time of your life! Surprised to see your caring gf on here? Really great you chose this computer game competition over dinner with my mom and dad that we planned for the past month. And you wont respond to any of my messages, really mature! Since you seem to not care about replying to me, heres an ultimatum, either you stay at your nerd competition or come to the dinner we planned for A MONTH. hope you dont choose wrong, otherwise enjoy being single forever!! `,
+			`hey everyone, hope youre having a great time coding or whatever. Hey @Preston Reed!Hope youre having the time of your life! Surprised to see your caring gf on here? Really great you chose this computer game competition over dinner with my mom and dad that we planned for the past month. And you wont respond to any of my messages, really mature! Since you seem to not care about replying to me, heres an ultimatum, either you stay at your nerd competition or come to the dinner we planned for A MONTH. hope you dont choose wrong, otherwise enjoy being single forever!! `,
+			`hey everyone, hope youre having a great time coding or whatever. Hey @Preston Reed!Hope youre having the time of your life! Surprised to see your caring gf on here? Really great you chose this computer game competition over dinner with my mom and dad that we planned for the past month. And you wont respond to any of my messages, really mature! Since you seem to not care about replying to me, heres an ultimatum, either you stay at your nerd competition or come to the dinner we planned for A MONTH. hope you dont choose wrong, otherwise enjoy being single forever!!`
+		]
+		function removePlayers(){
+			location.href='#home'
+			$('#azure-setup').css('display','')
+		}
+		function enroll(){
+			if(enrolled>=10){
+				$.toaster({message: "Maximum number of enrolled players reached", priority: "error"})
+				return
+			}
+			$('#read-text').css('display', '')
+			$('#read-text-text').text(qwertyui[Math.floor(Math.random()*qwertyui.length)])
+			enrollNewProfile(10)
+			enrolled++
+		}
 		function setup(){
 			azureState = "setup";
-			// $('#setup-button')
 			$.toaster({message: "Successfully connected to Azure", priority: "success"})
 		}
 
@@ -79,6 +109,7 @@
 
 		function removeAll(){
 			BurnItAll();
+			$.toaster({message: "Removed all known players.", priority: "success"})
 		}
 
 		function singlePlay(){
@@ -90,25 +121,24 @@
 				$.toaster({message: "Please register more players first", priority: "danger"})
 				return
 			}
+			$('#play-buttons').css('display', '')
 			location.href = '#canvas'
 			var obj = 'sheep'
 			$('#azure-setup').css('display', 'none')
-			new Vivus('working-canvas',
-				{duration: 1000, type:'oneByOne', pathTimingFunction: Vivus.EASE})
+			
+			nextImage();
 
 			$('#nextGame').attr('disabled', 'disabled');
 			for(var i=0;i<profileIds.length;i++){
 				if(profileIds[i].score === maxScore){
 					$('#winner').text(profileIds[i].name+' won the game!');
 					window.location.href = '#end'
+					$('#play-buttons').css('display', 'none')
 					return;
 				}
 			}
 			var obj = 'sheep'
 
-			// new Vivus('working-canvas',
-			// 	{duration: 1000, type:'oneByOne', pathTimingFunction: Vivus.EASE})
-			nextImage();
 
 			var recognizeSpeechId = setInterval(function(){
 				recognizer.recognizeOnceAsync(
