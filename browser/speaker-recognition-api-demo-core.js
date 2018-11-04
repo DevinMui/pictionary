@@ -310,7 +310,7 @@ function pollForIdentification(location){
 			console.log(request.responseText);
 
 			var json = JSON.parse(request.responseText);
-			if (json.status == 'succeeded')
+			if (json.status == 'succeeded' && correct)
 			{
 				// Identification process has completed
 				clearInterval(identifiedInterval);
@@ -323,6 +323,7 @@ function pollForIdentification(location){
 					correct = false;
 					speaker[0].score++;
 					alert(speaker[0].name + ' won the last game! They now have ' + speaker[0].score + ' points!');
+					$('#nextGame').removeAttr('disabled');
 					// increment score?
 				} else {
 					console.log('I couldn\'t tell who was talking. So embarrassing.');
