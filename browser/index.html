@@ -128,10 +128,10 @@
 			location.href = '#play'
 			var obj = model
 			$('#azure-setup').css('display', 'none')
-			
-			nextImage();
+			$('#overlay').css('display', 'flex')
 
-			$('#nextGame').attr('disabled', 'disabled');
+			nextImage(function(){
+				$('#nextGame').attr('disabled', 'disabled');
 			for(var i=0;i<profileIds.length;i++){
 				if(profileIds[i].score === maxScore){
 					$('#winner').text(profileIds[i].name+' won the game!');
@@ -140,15 +140,14 @@
 					return;
 				}
 			}
-			var obj = 'sheep'
-
+			var obj = model
 
 			var recognizeSpeechId = setInterval(function(){
+				console.log('starting recognitions')
 				recognizer.recognizeOnceAsync(
 				function (result) {
 					window.console.log(result);
-
-					if(result.privText.toLowerCase().indexOf(obj) > 0){
+					if(result.privText && result.privText.toLowerCase().indexOf(obj) > 0){
 						correct = true;
 						clearInterval(recognizeSpeechId);
 					}
@@ -156,39 +155,49 @@
 				function (err) {
 					window.console.log(err);
 				})
-			}, 250);
+			}, 2000);
 
-			var recognizeSpeakerId = setTimeout(function(){
+			var recognizeSpeakerId = setInterval(function(){
 				if(correct)
 					clearInterval(recognizeSpeakerId);
 				startListeningForIdentification();
-			}, 250);
+			}, 2000);
+
+			});
+
 		}
 
 
-		function nextImage(){
+		function nextImage(callback){
 			console.log('test')
-			$('#overlay').css('display', 'flex')
-			$.get('/generate', function(res){
-				var fn = res.body.filename.replace('\n','')
-				model = res.body.filename.substr('output/'.length,res.body.filename.indexOf('_'))
-				$.get('/'+fn, function(res){
-					$('#overlay').css('display', 'none')
-					let response = res
-					$('#play').html(response)
-					svg = $('svg')[0]
-					svg.setAttribute('id', 'working-canvas')
-					document.getElementById("working-canvas").setAttribute('height', '100%')
-					document.getElementById("working-canvas").setAttribute('width', '100%')
-					document.getElementById("working-canvas").setAttribute("viewBox", "20 10 50 50");
-					//hide loader
-					new Vivus('working-canvas',
-						{duration: 888, type:'oneByOne', start:'autostart', pathTimingFunction: Vivus.EASE})
-					}, 'text')
-					.fail(function(){
-					alert("Error receiving drawing.")
-					})
-			})
+			$.ajax({
+				url: 'http://40.118.145.204/generate',
+				type: 'GET',
+				// async: false,
+				success: function(res){
+					console.log(res)
+					var fn = res.filename.replace('\n','')
+					model = res.filename.substr('output/'.length,res.filename.indexOf('_'))
+					$.get('http://40.118.145.204/'+fn, function(res){
+						$('#overlay').css('display', 'none')
+						let response = res
+						$('#play').html(response)
+						svg = $('svg')[0]
+						svg.setAttribute('id', 'working-canvas')
+						document.getElementById("working-canvas").setAttribute('height', '100%')
+						document.getElementById("working-canvas").setAttribute('width', '100%')
+						document.getElementById("working-canvas").setAttribute("viewBox", "20 10 50 50");
+						//hide loader
+						new Vivus('working-canvas',
+							{duration: 888, type:'oneByOne', start:'autostart', pathTimingFunction: Vivus.EASE})
+							callback()
+						}, 'text')
+						.fail(function(){
+							alert("Error receiving drawing.")
+						})
+					}
+				})
+			
 		}
 		var recorder;
 		var audio_context;
