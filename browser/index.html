@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>Pictionary: Play with a robot against your friends!</title>
+	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/style.css" rel="stylesheet">
+</head>
+<body style="font-family: Helvetica;">
+	<section id="init">
+		<div class="container">
+			<h2>Azure Setup</h2>
+			<div>
+				<h1 style="font-weight:500;">Microsoft Cognitive Services Speech SDK JavaScript Quickstart</h1>
+				<form class="form-group">
+					<input id="subscriptionKey" type="text" value="ae41fa8eeb1a413baaeac3b80ed9bf18" placeholder="Speech Recognition Key" class="form-control">
+					<input id="subscriptionKey" type="text" value="47a317206894400489d697698fdde1c4" placeholder="Speaker Recognition Key" class="form-control">
+					<input id="regionKey" type="text" value="westus" placeholder="Region" class="form-control">
+					<a href="#" class="btn btn-primary form-control">Setup</a>
+				</form>
+			</div>
+		</div>
+	</section>
+
+	<section id="home">
+		<div class="container">
+			<h2>Welcome to Unnamed Pictionary Game!</h2>
+			<h2>Would you like to play by yourself?</h2>
+			<a href="#play" class="btn btn-primary">Yes</a>
+			<a href="#enroll" class="btn btn-success">No</a>
+		</div>
+	</section>
+
+	<section id="enroll">
+		<div class="container">
+			<h2>Add a person</h2>
+			<a id="enrollPlayer" class="btn btn-info">Add another player (up to 10)</a>
+		</div>
+	</section>
+
+	<section id="play">
+		<!-- aaron -->
+		<div class="container">
+		</div>
+	</section>
+
+	<section id="end">
+		<div class="container">
+			<h2>Play again?</h2>
+			<a href="#play" class="btn btn-primary">Yes</a>
+			<a href="#home" class="btn btn-danger">No</a><!-- oh no this will erase your enrollment profiles! -->
+		</div>
+	</section>
+
+	<script src="./jquery.min.js"></script>
+	<script src="./recorder.js"></script>
+	<script src="./microsoft.cognitiveservices.speech.sdk.bundle.js"></script>
+	<script src="./speaker-recognition-api-demo-core.js"></script>
+	<script src="./voice.js"></script>
+	<script>
+
+		var recorder;
+		var audio_context;
+
+		function onMediaSuccess(stream, callback, secondsOfAudio) {
+			audio_context = audio_context || new window.AudioContext;
+			var input = audio_context.createMediaStreamSource(stream);
+			recorder = new Recorder(input);
+			recorder.record();
+				
+			setTimeout(() => { StopListening(callback); }, secondsOfAudio*1000);
+		}
+
+		function onMediaError(e) {
+				console.error('media error', e);
+		}
+
+		function StopListening(callback){
+			console.log('...working...');
+			recorder && recorder.stop();
+			recorder.exportWAV(function(blob) {
+					callback(blob);
+			});
+			recorder.clear();
+		}
+
+	</script>
+</body>
+</html>
