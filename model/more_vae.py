@@ -182,4 +182,5 @@ def decode(z_input=None, draw_mode=True, temperature=0.1, factor=0.2):
 
 # get a sample drawing from the test set, and render it to .svg
 stroke = decode(np.random.randn(eval_model.hps.z_size))
+print("output/"+timestr+".svg")
 #draw_strokes(stroke)
