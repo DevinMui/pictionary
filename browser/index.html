@@ -160,13 +160,13 @@
 					function (err) {
 						window.console.log(err);
 					})
-				}, 5000);
+				}, 500);
 
 				var recognizeSpeakerId = setTimeout(function(){
 					if(correct)
 						clearInterval(recognizeSpeakerId);
 					startListeningForIdentification();
-				}, 5000);
+				}, 500);
 
 			});
 
@@ -188,7 +188,7 @@
 					$.get('http://40.118.145.204/'+fn, function(res){
 						$('#overlay').css('display', 'none')
 						let response = res
-						$('#play').html(response)
+						$('#canvas').html(response)
 						svg = $('svg')[0]
 						svg.setAttribute('id', 'working-canvas')
 						document.getElementById("working-canvas").setAttribute('height', '100%')
