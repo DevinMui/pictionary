@@ -45,9 +45,9 @@
 	<section id="play" style="">
 		<!-- aaron -->
 		<div class="container" style="">
-			<div id="canvas" style="">
+			<div id="canvas" style="z-index: 900">
 			</div>
-			<div style="position: absolute; bottom: 8px; right: 8px; display: none" id="play-buttons">
+			<div style="position: absolute; bottom: 8px; right: 8px; display: none; z-index: 998" id="play-buttons">
 				<button class="btn btn-danger" onclick="giveUp()">Give up?</button>
 				<button class="btn btn-primary" onclick="play()">Next</button>
 			</div>
@@ -114,6 +114,11 @@
 			BurnItAll();
 			$.toaster({message: "Removed all known players.", priority: "success"})
 		}
+		function giveUp(){
+			$.toaster({message: `The last word was ${model}.`, priority: 'info' })
+			nextImage()
+		}
+
 
 		function singlePlay(){
 			azureState = "registered"
