@@ -106,8 +106,6 @@
 			}, 250);
 		}
 
-		$('#kms').click(function(){
-			$.get('/another.svg', function(res){
 
 		function nextImage(){
 			console.log('test')
@@ -122,7 +120,8 @@
 				document.getElementById("working-canvas").setAttribute("viewBox", "20 10 50 50");
 				new Vivus('working-canvas',
                     {duration: 888, type:'oneByOne', start:'autostart', pathTimingFunction: Vivus.EASE})
-			}, 'text').fail(function(){
+			}, 'text')
+			.fail(function(){
 				alert("Error receiving drawing.")
 			})
 		}
@@ -150,7 +149,7 @@
 			});
 			recorder.clear();
 		}
-
+	
 	</script>
 	<script src="./speaker-recognition-api-demo-core.js"></script>
 </body>
