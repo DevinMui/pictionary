@@ -29,16 +29,16 @@ class App extends React.Component {
     this.state = {
       hasStarted : false,
       players : [
-        {key: 0, name: "Aaron", score:0},
-        {key: 1, name: "Devin", score:0},
-        {key: 2, name: "Catherine", score:0},
-        {key: 3, name: "Jaiveer", score:0}
+        // {key: 0, name: "Aaron", score:0},
+        // {key: 1, name: "Devin", score:0},
+        // {key: 2, name: "Catherine", score:0},
+        // {key: 3, name: "Jaiveer", score:0}
       ]
     }
   }
   addPlayer(name){
     this.setState({
-      players: [...this.state.players, {key: this.state.players[this.state.players.length-1].key+1, name: name, score: 0}]
+      players: [...this.state.players, {key: this.state.players.length, name: name, score: 0}]
     })
   }
   render() {
@@ -53,7 +53,7 @@ class App extends React.Component {
             if(this.state.hasStarted) 
               return <Redirect/>
             else
-              return <Landing players = {this.state.players}/>}}
+              return <Landing addPlayerFunction = {(name)=>this.addPlayer(name)} players = {this.state.players}/>}}
           />
         <Route 
           path="/play"

@@ -131,17 +131,17 @@ function verifyProfile(blob){
 
 //-- Speaker Identification methods
 // 1. Start the browser listening, listen for 15 seconds, pass the audio stream to "createProfile"
-function enrollNewProfile(){
+function enrollNewProfile(seconds=15){
 	navigator.getUserMedia({audio: true}, function(stream){
 		console.log('I\'m listening... just start talking for a few seconds...');
 		console.log('Maybe read this: \n' + thingsToRead[Math.floor(Math.random() * thingsToRead.length)]);
-		onMediaSuccess(stream, createProfile, 15);
+		onMediaSuccess(stream, createProfile, seconds);
 	}, onMediaError);
 }
 
 // createProfile calls the profile endpoint to get a profile Id, then calls enrollProfileAudio
 function createProfile(blob){
-	addAudioPlayer(blob);
+	// addAudioPlayer(blob);
 
 	var create = 'https://westus.api.cognitive.microsoft.com/spid/v1.0/identificationProfiles';
 
@@ -223,6 +223,10 @@ function pollForEnrollment(location, profileId){
 				// ask for a name to associated with the ID to make the identification nicer
 				var name = window.prompt('Who was that talking?');
 				profileIds.push(new Profile(name, profileId));
+
+				var player = "<div><p>"+name+"</p></div>";
+
+				$('#players').append(player);
 				console.log(profileId + ' is now mapped to ' + name);
 			}
 			else if(json.status == 'succeeded' && json.processingResult.remainingEnrollmentSpeechTime > 0) {
@@ -254,7 +258,7 @@ function startListeningForIdentification(){
 
 // 3. Take the audio and send it to the identification endpoint
 function identifyProfile(blob){
-	addAudioPlayer(blob);
+	// addAudioPlayer(blob);
 
 	// comma delimited list of profile IDs we're interested in comparing against
 	var Ids = profileIds.map(x => x.profileId).join();
@@ -310,12 +314,20 @@ function pollForIdentification(location){
 			{
 				// Identification process has completed
 				clearInterval(identifiedInterval);
+				console.log(json.processingResult.identifiedProfileId);
 				var speaker = profileIds.filter(function(p){return p.profileId == json.processingResult.identifiedProfileId});
 				
 				if (speaker != null && speaker.length > 0){
 					console.log('I think ' + speaker[0].name + ' was talking');
+					lastSpoke = speaker[0].name
+					correct = false;
+					speaker[0].score++;
+					alert(speaker[0].name + ' won the last game! They now have ' + speaker[0].score + ' points!');
+					// increment score?
 				} else {
 					console.log('I couldn\'t tell who was talking. So embarrassing.');
+					if(correct)
+						prompt('I couldn\'t detect who was speaking. Please enter the winner here: ');
 				}
 			}
 			else 
@@ -409,13 +421,13 @@ var qs = (function(a) {
 })(window.location.search.substr(1).split('&'));
 
 // Get the Cognitive Services key from the querystring
-var key = qs['key'];
+var key = document.getElementById("speakerSubscriptionKey").value;
 
 // Speaker Recognition API profile configuration - constructs to make management easier
-var Profile = class { constructor (name, profileId) { this.name = name; this.profileId = profileId;}};
-var VerificationProfile = class { constructor (name, profileId) { this.name = name; this.profileId = profileId; this.remainingEnrollments = 3}};
-var profileIds = [];
-var verificationProfile = new VerificationProfile();
+// var Profile = class { constructor (name, profileId) { this.name = name; this.profileId = profileId;}};
+// var VerificationProfile = class { constructor (name, profileId) { this.name = name; this.profileId = profileId; this.remainingEnrollments = 3}};
+// var profileIds = [];
+// var verificationProfile = new VerificationProfile();
 
 (function () {
 	// Cross browser sound recording using the web audio API

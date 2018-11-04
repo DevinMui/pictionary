@@ -5,6 +5,9 @@ html,body {
 body {
 	height: 100%;
 }
+svg{
+	stroke-linecap: round
+}
 
 section {
 	margin: 0 auto;
