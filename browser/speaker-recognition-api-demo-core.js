@@ -335,7 +335,7 @@ function pollForIdentification(location){
 			{
 				// Not done yet			
 				console.log('still thinking..');
-				console.log(json);
+				// console.log(json);
 			}
 		};
 
