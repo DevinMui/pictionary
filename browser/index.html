@@ -16,6 +16,7 @@
 					<input id="speakerSubscriptionKey" type="text" value="47a317206894400489d697698fdde1c4" placeholder="Speaker Recognition Key" class="form-control">
 					<input id="regionKey" type="text" value="westus" placeholder="Region" class="form-control">
 					<a href="#" class="btn btn-primary form-control" onclick="setup()">Setup</a>
+					<a href="#" class="btn btn-primary form-control" onclick="removeAll()">Remove All</a>
 				</form>
 			</div>
 		</div>
@@ -45,14 +46,17 @@
 			<div id="canvas" style="">
 			</div>
 			<button class="btn btn-danger" onclick="giveUp()">Give up?</button>
+			<button class="btn btn-primary" onclick="play()">Next</button>
 		</div>
 	</section>
 
 	<section id="end">
 		<div class="container">
+			<h1 id="winner"></h1>
 			<h2>Play again?</h2>
 			<a href="#play" class="btn btn-primary" onclick="play()">Yes</a>
 			<a href="#home" class="btn btn-danger" onclick="removePlayers()">No</a><!-- oh no this will erase your enrollment profiles! -->
+			<a href="#enroll" class="btn btn-info">Configure Players</a>
 		</div>
 	</section>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/vivus/0.4.4/vivus.min.js"></script>
@@ -61,7 +65,6 @@
 	<script src="./microsoft.cognitiveservices.speech.sdk.bundle.js"></script>
 	<script src="./voice.js"></script>
 	<script>
-
 		// Speaker Recognition API profile configuration - constructs to make management easier
 		var Profile = class { constructor (name, profileId) { this.name = name; this.profileId = profileId;this.score=0}};
 		var VerificationProfile = class { constructor (name, profileId) { this.name = name; this.profileId = profileId; this.remainingEnrollments = 3}};
@@ -70,13 +73,26 @@
 
 		var lastSpoke = undefined;
 		var correct = false;
+		var maxScore = 3;
+
+		function removeAll(){
+			BurnItAll();
+		}
 
 		function play(){
+			$('#nextGame').attr('disabled', 'disabled');
+			for(var i=0;i<profileIds.length;i++){
+				if(profileIds[i].score === maxScore){
+					$('#winner').text(profileIds[i].name+' won the game!');
+					window.location.href = '#end'
+					return;
+				}
+			}
 			var obj = 'sheep'
 
-			new Vivus('working-canvas',
-				{duration: 1000, type:'oneByOne', pathTimingFunction: Vivus.EASE})
-
+			// new Vivus('working-canvas',
+			// 	{duration: 1000, type:'oneByOne', pathTimingFunction: Vivus.EASE})
+			nextImage();
 
 			var recognizeSpeechId = setTimeout(function(){
 				recognizer.recognizeOnceAsync(
@@ -87,15 +103,9 @@
 						correct = true;
 						clearInterval(recognizeSpeechId);
 					}
-
-					recognizer.close(); 
-					recognizer = undefined;
 				},
 				function (err) {
 					window.console.log(err);
-
-					recognizer.close();
-					recognizer = undefined;
 				})
 			}, 250);
 
