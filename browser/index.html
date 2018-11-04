@@ -129,11 +129,11 @@
 				$.toaster({message: "Please register more players first", priority: "danger"})
 				return
 			}
+			$('#azure-setup').css('display', 'none')
 			$('#play-buttons').css('display', '')
 			location.href = '#play'
-			$('#azure-setup').css('display', 'none')
 			$('#overlay').css('display', 'flex')
-
+			$('#canvas').html('')
 			nextImage(function(){
 				$('#nextGame').attr('disabled', 'disabled');
 				for(var i=0;i<profileIds.length;i++){
