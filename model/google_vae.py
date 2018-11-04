@@ -16,6 +16,7 @@ from six.moves import xrange
 
 
 # import our command line tools
+#magenta library is BREKT
 from magenta.models.sketch_rnn.sketch_rnn_train import *
 from magenta.models.sketch_rnn.model import *
 from magenta.models.sketch_rnn.utils import *
@@ -102,6 +103,9 @@ def make_grid_svg(s_list, grid_space=10.0, grid_space_x=16.0):
 data_dir ='http://github.com/hardmaru/sketch-rnn-datasets/raw/master/aaron_sheep/'
 models_root_dir = '/tmp/sketch_rnn/models'
 model_dir = '/tmp/sketch_rnn/models/aaron_sheep/layer_norm'
+total_model_dir = ['/tmp/sketch_rnn/models/aaron_sheep/layer_norm', '/tmp/sketch_rnn/models/owl/lstm', '/tmp/sketch_rnn/models/flamingo/lstm_uncond', '/tmp/sketch_rnn/models/catbus/lstm', '/tmp/sketch_rnn/models/elephantpig/lstm']
+#keep changing model_dir if you want to change 
+#model_dir = total_model_dir[1]
 
 download_pretrained_models(models_root_dir=models_root_dir)
 
