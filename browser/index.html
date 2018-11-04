@@ -126,42 +126,42 @@
 			}
 			$('#play-buttons').css('display', '')
 			location.href = '#play'
-			var obj = model
 			$('#azure-setup').css('display', 'none')
 			$('#overlay').css('display', 'flex')
 
 			nextImage(function(){
 				$('#nextGame').attr('disabled', 'disabled');
-			for(var i=0;i<profileIds.length;i++){
-				if(profileIds[i].score === maxScore){
-					$('#winner').text(profileIds[i].name+' won the game!');
-					window.location.href = '#end'
-					$('#play-buttons').css('display', 'none')
-					return;
-				}
-			}
-			var obj = model
-
-			var recognizeSpeechId = setInterval(function(){
-				console.log('starting recognitions')
-				recognizer.recognizeOnceAsync(
-				function (result) {
-					window.console.log(result);
-					if(result.privText && result.privText.toLowerCase().indexOf(obj) > 0){
-						correct = true;
-						clearInterval(recognizeSpeechId);
+				for(var i=0;i<profileIds.length;i++){
+					if(profileIds[i].score === maxScore){
+						$('#winner').text(profileIds[i].name+' won the game!');
+						window.location.href = '#end'
+						$('#play-buttons').css('display', 'none')
+						return;
 					}
-				},
-				function (err) {
-					window.console.log(err);
-				})
-			}, 2000);
+				}
 
-			var recognizeSpeakerId = setInterval(function(){
-				if(correct)
-					clearInterval(recognizeSpeakerId);
-				startListeningForIdentification();
-			}, 2000);
+				console.log(model)
+
+				var recognizeSpeechId = setInterval(function(){
+					console.log('starting recognitions')
+					recognizer.recognizeOnceAsync(
+					function (result) {
+						window.console.log(result);
+						if(result.privText && result.privText.toLowerCase().indexOf(model) > 0){
+							correct = true;
+							clearInterval(recognizeSpeechId);
+						}
+					},
+					function (err) {
+						window.console.log(err);
+					})
+				}, 5000);
+
+				var recognizeSpeakerId = setTimeout(function(){
+					if(correct)
+						clearInterval(recognizeSpeakerId);
+					startListeningForIdentification();
+				}, 5000);
 
 			});
 
@@ -177,7 +177,9 @@
 				success: function(res){
 					console.log(res)
 					var fn = res.filename.replace('\n','')
-					model = res.filename.substr('output/'.length,res.filename.indexOf('_'))
+					console.log(res.filename)
+					// model = res.filename.substr('output/'.length,res.filename.indexOf('_'))
+					model = res.filename.substr('output'.length+1, res.filename.indexOf('_')-'output'.length-1)
 					$.get('http://40.118.145.204/'+fn, function(res){
 						$('#overlay').css('display', 'none')
 						let response = res
