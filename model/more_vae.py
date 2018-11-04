@@ -103,7 +103,9 @@ def make_grid_svg(s_list, grid_space=10.0, grid_space_x=16.0):
 data_dir ='http://github.com/hardmaru/sketch-rnn-datasets/raw/master/aaron_sheep/'
 models_root_dir = '/tmp/sketch_rnn/models'
 model_dir = '/tmp/sketch_rnn/models/aaron_sheep/layer_norm'
-total_model_dir = ['/tmp/sketch_rnn/models/aaron_sheep/layer_norm', '/tmp/sketch_rnn/models/owl/lstm', '/tmp/sketch_rnn/models/flamingo/lstm_uncond', '/tmp/sketch_rnn/models/catbus/lstm', '/tmp/sketch_rnn/models/elephantpig/lstm']
+total_model_dir = [ '/tmp/sketch_rnn/models/owl/lstm', '/tmp/sketch_rnn/models/flamingo/lstm_uncond', '/tmp/sketch_rnn/models/catbus/lstm', '/tmp/sketch_rnn/models/elephantpig/lstm']
+names = ['owl','flamingo','cat','elephant']
+
 #keep changing model_dir if you want to change 
 #model_dir = total_model_dir[1]
 
@@ -144,8 +146,9 @@ def load_model_compatible(model_dir):
   sample_model_params.max_seq_len = 1  # sample one point at a time
   return [model_params, eval_model_params, sample_model_params]
 
+num = random.randrange(0,len(total_model_dir)-1)
+model_dir = total_model_dir[num]
 
-model_dir = total_model_dir[random.randrange(1,len(total_model_dir)-1)]
 #[train_set, valid_set, test_set, hps_model, eval_hps_model, sample_hps_model] = load_env_compatible(data_dir, model_dir)
 [hps_model,eval_hps_model,sample_hps_model] = load_model_compatible(model_dir)
 
@@ -182,5 +185,5 @@ def decode(z_input=None, draw_mode=True, temperature=0.1, factor=0.2):
 
 # get a sample drawing from the test set, and render it to .svg
 stroke = decode(np.random.randn(eval_model.hps.z_size))
-print("output/"+timestr+".svg")
+print("output/"+names[num]+"_"+timestr+".svg")
 #draw_strokes(stroke)
