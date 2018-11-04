@@ -1,7 +1,10 @@
 html,body {
 	height: 100%;
+	overflow:hidden;
 }
-
+#play{
+	min-height: 100vh
+}
 body {
 	height: 100%;
 }
