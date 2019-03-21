@@ -249,7 +249,7 @@ function pollForEnrollment(location, profileId){
 function startListeningForIdentification(){
 	if (profileIds.length > 0 ){
 		console.log('I\'m listening... just start talking for a few seconds...');
-		console.log('Maybe read this: \n' + thingsToRead[Math.floor(Math.random() * thingsToRead.length)]);
+		// console.log('Maybe read this: \n' + thingsToRead[Math.floor(Math.random() * thingsToRead.length)]);
 		navigator.getUserMedia({audio: true}, function(stream){onMediaSuccess(stream, identifyProfile, 10)}, onMediaError);
 	} else {
 		console.log('No profiles enrolled yet! Click the other button...');
@@ -259,36 +259,55 @@ function startListeningForIdentification(){
 // 3. Take the audio and send it to the identification endpoint
 function identifyProfile(blob){
 	// addAudioPlayer(blob);
+	// console.log(blob)
+	// blob.name = 'foo.wav'
+	var file = new File([blob],'foo.wav')
+	var audioConfig = SpeechSDK.AudioConfig.fromWavFileInput(file)
+	recognizer = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
+	recognizer.recognizeOnceAsync(
+	function (result) {
+		console.log(result)
+		window.console.log(result);
+		if(result.privText!==undefined && result.privText.toLowerCase().indexOf(model) > 0){
 
-	// comma delimited list of profile IDs we're interested in comparing against
-	var Ids = profileIds.map(x => x.profileId).join();
+			// comma delimited list of profile IDs we're interested in comparing against
+			var Ids = profileIds.map(x => x.profileId).join();
 
-	var identify = 'https://westus.api.cognitive.microsoft.com/spid/v1.0/identify?identificationProfileIds=' 
-		+ Ids 
-		+ '&shortAudio=true';
-  
-	var request = new XMLHttpRequest();
-	request.open("POST", identify, true);
-	
-	request.setRequestHeader('Content-Type','application/json');
-	request.setRequestHeader('Ocp-Apim-Subscription-Key', key);
-  
-	request.onload = function () {
-		console.log('identifying profile');
-		console.log(request.responseText);
+			var identify = 'https://westus.api.cognitive.microsoft.com/spid/v1.0/identify?identificationProfileIds=' 
+				+ Ids 
+				+ '&shortAudio=true';
+		  
+			var request = new XMLHttpRequest();
+			request.open("POST", identify, true);
+			
+			request.setRequestHeader('Content-Type','application/json');
+			request.setRequestHeader('Ocp-Apim-Subscription-Key', key);
+		  
+			request.onload = function () {
+				console.log('identifying profile');
+				console.log(request.responseText);
 
-		// The response contains a location to poll for status
-		var location = request.getResponseHeader('Operation-Location');
+				// The response contains a location to poll for status
+				var location = request.getResponseHeader('Operation-Location');
 
-		if (location!=null) {
-			// ping that location to get the identification status
-			pollForIdentification(location);
-		} else {
-			console.log('Ugh. I can\'t poll, it\'s all gone wrong.');
+				if (location!=null) {
+					// ping that location to get the identification status
+					pollForIdentification(location);
+				} else {
+					console.log('Ugh. I can\'t poll, it\'s all gone wrong.');
+				}
+			};
+		  
+			request.send(file);
 		}
-	};
-  
-	request.send(blob);
+		recognizer.close()
+		recognizer = undefined
+	},
+	function (err) {
+		window.console.log(err);
+		recognizer.close()
+		recognizer = undefined
+	})
 }
 
 // Ping the status endpoint to see if the identification has completed
@@ -310,7 +329,7 @@ function pollForIdentification(location){
 			console.log(request.responseText);
 
 			var json = JSON.parse(request.responseText);
-			if (json.status == 'succeeded' && correct)
+			if (json.status == 'succeeded')
 			{
 				// Identification process has completed
 				clearInterval(identifiedInterval);
@@ -318,9 +337,9 @@ function pollForIdentification(location){
 				var speaker = profileIds.filter(function(p){return p.profileId == json.processingResult.identifiedProfileId});
 				
 				if (speaker != null && speaker.length > 0){
+					correct = true
 					console.log('I think ' + speaker[0].name + ' was talking');
 					lastSpoke = speaker[0].name
-					correct = false;
 					speaker[0].score++;
 					alert(speaker[0].name + ' won the last game! They now have ' + speaker[0].score + ' points!');
 					$('#nextGame').removeAttr('disabled');
@@ -382,20 +401,20 @@ function BurnItAll(mode = 'identification'){
 // This method adds the recorded audio to the page so you can listen to it
 function addAudioPlayer(blob){	
 	var url = URL.createObjectURL(blob);
-	var log = document.getElementById('log');
+	// var log = document.getElementById('log');
 
-	var audio = document.querySelector('#replay');
-	if (audio != null) {audio.parentNode.removeChild(audio);}
+	// var audio = document.querySelector('#replay');
+	// if (audio != null) {audio.parentNode.removeChild(audio);}
 
 	audio = document.createElement('audio');
-	audio.setAttribute('id','replay');
+	// audio.setAttribute('id','replay');
 	audio.setAttribute('controls','controls');
 
 	var source = document.createElement('source');
 	source.src = url;
-
-	audio.appendChild(source);
-	log.parentNode.insertBefore(audio, log);
+	$('#canvas').append(audio)
+	// audio.appendChild(source);
+	// log.parentNode.insertBefore(audio, log);
 }
 
 // Example phrases

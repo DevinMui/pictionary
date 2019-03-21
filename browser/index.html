@@ -125,6 +125,7 @@
 			play()
 		}
 		function play(){
+			correct = false
 			if(azureState !== "registered"){
 				$.toaster({message: "Please register more players first", priority: "danger"})
 				return
@@ -147,26 +148,26 @@
 
 				console.log(model)
 
-				var recognizeSpeechId = setInterval(function(){
-					console.log('starting recognitions')
-					recognizer.recognizeOnceAsync(
-					function (result) {
-						window.console.log(result);
-						if(result.privText && result.privText.toLowerCase().indexOf(model) > 0){
-							correct = true;
-							clearInterval(recognizeSpeechId);
-						}
-					},
-					function (err) {
-						window.console.log(err);
-					})
-				}, 500);
+				// var recognizeSpeechId = setInterval(function(){
+				// 	console.log('starting recognitions')
+				// 	recognizer.recognizeOnceAsync(
+				// 	function (result) {
+				// 		window.console.log(result);
+				// 		if(result.privText && result.privText.toLowerCase().indexOf(model) > 0){
+				// 			correct = true;
+				// 			clearInterval(recognizeSpeechId);
+				// 		}
+				// 	},
+				// 	function (err) {
+				// 		window.console.log(err);
+				// 	})
+				// }, 500);
 
-				var recognizeSpeakerId = setTimeout(function(){
+				var recognizeSpeakerId = setInterval(function(){
 					if(correct)
 						clearInterval(recognizeSpeakerId);
 					startListeningForIdentification();
-				}, 500);
+				}, 6000);
 
 			});
 
@@ -183,8 +184,9 @@
 					console.log(res)
 					var fn = res.filename.replace('\n','')
 					console.log(res.filename)
-					// model = res.filename.substr('output/'.length,res.filename.indexOf('_'))
 					model = res.filename.substr('output'.length+1, res.filename.indexOf('_')-'output'.length-1)
+					// fn = 'output/elephant_20181104-163614.svg'
+					// model = 'elephant'
 					$.get('http://40.118.145.204/'+fn, function(res){
 						$('#overlay').css('display', 'none')
 						let response = res
