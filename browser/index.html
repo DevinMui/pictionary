@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8" />
-	<title>Pictionary: Play with a robot against your friends!</title>
+	<title>PictRNNary: Play with a robot against your friends!</title>
 	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 	<link href="css/style.css" rel="stylesheet">
 </head>
@@ -116,7 +116,7 @@
 		}
 		function giveUp(){
 			$.toaster({message: `The last word was ${model}.`, priority: 'info' })
-			nextImage()
+			play()
 		}
 
 
@@ -130,11 +130,11 @@
 				$.toaster({message: "Please register more players first", priority: "danger"})
 				return
 			}
+			$('#azure-setup').css('display', 'none')
 			$('#play-buttons').css('display', '')
 			location.href = '#play'
-			$('#azure-setup').css('display', 'none')
 			$('#overlay').css('display', 'flex')
-
+			$('#canvas').html('')
 			nextImage(function(){
 				$('#nextGame').attr('disabled', 'disabled');
 				for(var i=0;i<profileIds.length;i++){

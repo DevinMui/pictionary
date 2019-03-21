@@ -1,0 +1,33 @@
+{
+ "data_set": [
+  "apple.npz"
+ ],
+ "num_steps": 10000000,
+ "save_every": 500,
+ "max_seq_len": 62,
+ "dec_rnn_size": 512,
+ "dec_model": "lstm",
+ "enc_rnn_size": 256,
+ "enc_model": "lstm",
+ "z_size": 128,
+ "kl_weight": 0.5,
+ "kl_weight_start": 0.01,
+ "kl_tolerance": 0.2,
+ "batch_size": 100,
+ "grad_clip": 1.0,
+ "num_mixture": 20,
+ "learning_rate": 0.001,
+ "decay_rate": 0.9999,
+ "kl_decay_rate": 0.99995,
+ "min_learning_rate": 1e-05,
+ "use_recurrent_dropout": true,
+ "recurrent_dropout_prob": 0.9,
+ "use_input_dropout": false,
+ "input_dropout_prob": 0.9,
+ "use_output_dropout": false,
+ "output_dropout_prob": 0.9,
+ "random_scale_factor": 0.15,
+ "augment_stroke_prob": 0.1,
+ "conditional": true,
+ "is_training": true
+}
